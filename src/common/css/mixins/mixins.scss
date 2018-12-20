@@ -1,0 +1,226 @@
+@import "./function.scss";
+@import "./config.scss";
+/* BEM
+ -------------------------- */
+@mixin b($block) {
+  $B: $namespace+'-'+$block !global;
+
+  .#{$B} {
+    @content;
+  }
+}
+
+@mixin e($element) {
+  $E: $element !global;
+  $selector: &;
+  $currentSelector: "";
+
+  @each $unit in $element {
+    $currentSelector: #{$currentSelector + "." + $B + $element-separator + $unit + ","};
+  }
+
+  @if hitAllSpecialNestRule($selector) {
+    @at-root {
+      #{$selector} {
+        #{$currentSelector} {
+          @content;
+        }
+      }
+    }
+  }
+
+  @else {
+    @at-root {
+      #{$currentSelector} {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin m($modifier) {
+  $selector: &;
+  $currentSelector: "";
+
+  @each $unit in $modifier {
+    $currentSelector: #{$currentSelector + & + $modifier-separator + $unit + ","};
+  }
+
+  @at-root {
+    #{$currentSelector} {
+      @content;
+    }
+  }
+}
+
+@mixin configurable-m($modifier, $E-flag: false) {
+  $selector: &;
+  $interpolation: '';
+
+  @if $E-flag {
+    $interpolation: $element-separator + $E-flag;
+  }
+
+  @at-root {
+    #{$selector} {
+      .#{$B + $interpolation + $modifier-separator + $modifier} {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin spec-selector($specSelector: '', $element: $E, $modifier: false, $block: $B) {
+  $modifierCombo: '';
+
+  @if $modifier {
+    $modifierCombo: $modifier-separator + $modifier;
+  }
+
+  @at-root {
+    #{&}#{$specSelector}.#{$block + $element-separator + $element + $modifierCombo} {
+      @content;
+    }
+  }
+}
+
+@mixin meb($modifier: false, $element: $E, $block: $B) {
+  $selector: &;
+  $modifierCombo: '';
+
+  @if $modifier {
+    $modifierCombo: $modifier-separator + $modifier;
+  }
+
+  @at-root {
+    #{$selector} {
+      .#{$block + $element-separator + $element + $modifierCombo} {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin when($state) {
+  @at-root {
+    &.#{$state-prefix + $state} {
+      @content;
+    }
+  }
+}
+
+@mixin extend-rule($name) {
+  @extend #{'%shared-'+$name};
+}
+
+@mixin share-rule($name) {
+  $rule-name: '%shared-'+$name;
+
+  @at-root #{$rule-name} {
+    @content;
+  }
+}
+@mixin pseudo($pseudo) {
+  @at-root #{&}#{':#{$pseudo}'} {
+    @content;
+  }
+}
+
+@mixin displayflex {
+  display: flex;
+  display: -webkit-box;
+  display: -webkit-flex;
+}
+
+@mixin flex($t: 1) {
+  flex: $t;
+  -webkit-box-flex: $t;
+  -webkit-flex: $t;
+}
+
+@mixin transform($t) {
+  transform: $t;
+  -webkit-transform: $t;
+}
+
+@mixin transition($t) {
+  transition: $t;
+  -webkit-transition: $t;
+}
+
+//渐变
+@mixin linear-gradient($t, $c1, $c2) {
+  background: linear-gradient($t, $c1, $c2);
+  background: -webkit-linear-gradient($t, $c1, $c2); 
+}
+
+//超出一行显示省略号
+@mixin oneline {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+//超出n行显示省略号
+@mixin moreline($t: 2) {
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $t;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+//0.5px线
+@mixin halfline($a: bottom, $c: #e9e9e9, $p: relative) {
+  position: $p;
+
+  &:after {
+    content: '';
+    position: absolute;
+    display: block;
+    background-color: $c;
+
+    @if(top == $a) {
+      width: 100%;
+          height: 1px;
+          top: 0;
+          left: 0;
+      @include transform(scaleY(0.5));
+    }
+
+    @else if(right == $a) {
+      width: 1px;
+          height: 100%;
+          top: 0;
+          right: 0;
+      @include transform(scaleX(0.5));
+    }
+
+    @else if(bottom == $a) {
+      width: 100%;
+          height: 1px;
+          bottom: 0;
+          left: 0;
+      @include transform(scaleY(0.5));
+    }
+
+    @else if(left == $a) {
+      width: 1px;
+          height: 100%;
+          top: 0;
+          left: 0;
+      @include transform(scaleX(0.5));
+    }
+    
+  }
+}
+
+//按钮点击active效果
+@mixin btn-active($c, $r: 10%) {
+  background-color: $c;
+
+  &:active {
+    background-color: darken($c, $r);
+  }
+}
+

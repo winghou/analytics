@@ -1,0 +1,42 @@
+.ListItem {
+    cursor: pointer;
+
+    .ListItemTitle {
+        width: 140px;
+        transition: all 0.3s ease-in;
+        -webkit-transition: all 0.3s ease-in;
+        background: #a7d7fd;
+    }
+
+    &:hover {
+        .ListItemTitle {
+            width: 300px;
+            background: #cbe6fb;
+        }
+    }
+}
+
+ul,
+li,
+p {
+    margin: 0;
+    padding: 0;
+}
+
+.Performance {
+    li {
+        background: #eee,
+    }
+
+    .lv1 {
+        background: #c7f9ca
+    }
+
+    .lv2 {
+        background: #fde8bb
+    }
+
+    .lv3 {
+        background: #ffb2b2
+    }
+}
