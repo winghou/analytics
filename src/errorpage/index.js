@@ -2,7 +2,14 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Header from 'components/head';
 import Nav from 'components/nav';
+import util from '../../api/util';
+ 
+const date = util.date;
+
+const getParam = util.getParam;
+
 import './index.scss';
+
 let css = {
     main: {
         margin: '20px 0',
@@ -10,7 +17,7 @@ let css = {
         flexDirection: 'row',
         flexWrap: 'nowrap',
         paddingTop: '80px'
-    },
+    }, 
     indexMain: {
         minWidth: '1200px',
         flex: 1,
@@ -47,56 +54,90 @@ let css = {
         paddingLeft: '10px'
     }
 }
+let day=getParam('day'),project=getParam('project'),id=getParam('id');
 
 class App extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+          data:{}
+        }
+        this.getData = this.getData.bind(this);
+        this.getData ()
+    }
+    getData(){
+        var that = this;
+        fetch('/api/getError?day='+day+'&project='+project+'&id='+id, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then(response => response.json()).then(function(response){
+            if(response.code==1){
 
+                // let ChartData = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                //     data =  Object.assign({},that.state.data);
+                // response.reslut.map(function(item,index){
+                //     ChartData[item._id-1] = item.num
+                // })
+                // data.series[0].data = ChartData;
+                that.setState({
+                    data:response.reslut[0],
+                    
+                })
+            }else{
+                alert(response.msg)
+            }
+        });
     }
     render() {
-        let c_width = (window.innerWidth - 400) / 2;
-        c_width = (c_width <= 500) ? 500 : c_width;
+        let _d = this.state.data;
         return (
             <div>
                 <Header />
                 <div style={css.main}>
                     <Nav/>
                     <div style={css.indexMain}>
-                             <p style={css.item}><span style={css.itemSpan}>上报时间:</span>2018-12-18 10:20:12</p>
-                      <p style={css.item}><span style={css.itemSpan}>页面标题:</span>自助在线预约</p>
-                      <p style={css.item}><span style={css.itemSpan}>用户信息:</span>userId=&openId=&ykzUserId=&ykzOpenId=</p>
-                      <p style={css.item}><span style={css.itemSpan}>当前页面:</span>https://analytics-test.yaochufa.com/#/Error_Details?id=5c1866a2afc09f17b39da588&project=yunke&date=2018-12-18</p>
-                      <p style={css.item}><span style={css.itemSpan}>来源页面:</span>https://analytics-test.yaochufa.com/#/Error_Details?id=5c1866a2afc09f17b39da588&project=yunke&date=2018-12-18</p>
-                      <p style={css.item}><span style={css.itemSpan}>IP:</span>2018-12-18 10:20:12</p>
+
+                       <p style={css.item}><span style={css.itemSpan}>上报时间:</span>{date.formatTime(_d.timestamp,1)}</p>
+                      <p style={css.item}><span style={css.itemSpan}>页面标题:</span>{_d.title}</p>
+                      <p style={css.item}><span style={css.itemSpan}>用户id:</span>{_d.userId}</p>
+                      <p style={css.item}><span style={css.itemSpan}>用户信息:</span>{_d.userInfo||'无'}</p>
+                      <p style={css.item}><span style={css.itemSpan}>当前页面:</span>{_d.url}</p>
+                      <p style={css.item}><span style={css.itemSpan}>来源页面:</span>{_d.referrer||'无'}</p>
+                      <p style={css.item}><span style={css.itemSpan}>IP:</span>{_d.ip}</p>
                       <div>
                       <p style={css.AgentTit}>js错误:</p>
                       <div style={css.Agent}>
                         <div><span style={css.itemSpan}>出错文件:</span>
-                        https://qiniu-cdn7.jinxidao.com/dvb/frontv2/js/common.js?v=120181214112105; </div>
+                        {_d.errorurl||'未知'}</div>
                         <div ><span style={css.itemSpan}>错误说明:</span> 
-                        SecurityError: The operation is insecure.; 出错行:1</div>
+                        {_d.errorContent}</div>
+                        <div ><span style={css.itemSpan}>错误行:</span> 
+                        {_d.errorline||1}</div>
                       </div>
                       </div>
                       <div>
                       <p style={css.AgentTit}>User Agent:</p>
-                      <p style={css.Agent}>Mozilla/5.0 (iPhone; CPU iPhone OS 12_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1</p>
+                      <p style={css.Agent}>{_d.ua}</p>
                       </div>
                       <div style={css.Agentinfo}>
                         <div style={css.AgentinfoItem}>
                           <p>浏览器类型:</p>
-                          <p>chrome浏览器-63.0.3239.132</p>
+                          <p>{(_d.nv&&_d.nv.shell)?_d.nv.shell:'未知'}</p>
                         </div>
                         <div style={css.AgentinfoItem}>
                           <p>浏览器内核:</p>
-                          <p>webkit-63.0.3239.132</p>
+                          <p>{(_d.nv&&_d.nv.core)?_d.nv.core:'未知'}</p>
                         </div>
                         <div style={css.AgentinfoItem}>
                           <p>操作系统:</p>
-                          <p>Win10</p>
+                          <p>{(_d.nv&&_d.nv.platform)?_d.nv.platform:'未知'}</p>
                         </div>
                         <div style={css.AgentinfoItem}>
                           <p>是否app打开:</p>
-                          <p>false</p>
+                           <p>{(_d.nv&&_d.nv.app)?_d.nv.app:'未知'}</p>
                         </div>
                       </div>
                     </div>

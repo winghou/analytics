@@ -4,7 +4,7 @@ let css = {
     title: {
         fontSize: '20px',
         marginBottom: '20px'
-    }
+    } 
 }
 
 class SevenClien extends React.Component {
@@ -46,7 +46,7 @@ class SevenClien extends React.Component {
                 ]
             }
         }
-
+        
 
         this.showChart = this.showChart.bind(this);
     }

@@ -11,6 +11,8 @@ class LineCharts extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            showLoading:true,
+            type:'getErrorLine',
             data: {
                 xAxis: {
                     type: 'category',
@@ -31,7 +33,7 @@ class LineCharts extends React.Component {
                     type: 'value',
                     axisLabel: {
                         color: "#999"
-                    },
+                    }, 
                     axisTick: {
                         lineStyle: {
                             color: "#999"
@@ -78,10 +80,46 @@ class LineCharts extends React.Component {
 
 
         this.showChart = this.showChart.bind(this);
+        this.getData = this.getData.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.getData(this.props.day,this.props.url);
+    }
+    getData(day,url){
+        var that = this,_url=url;
+        if(url == undefined){
+            _url = ''
+        }
+        fetch('/api/'+this.state.type+'?day='+day+'&project='+this.props.project+'&url='+_url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then(response => response.json()).then(function(response){
+            if(response.code==1){
+                let ChartData = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    data =  Object.assign({},that.state.data);
+                response.reslut.map(function(item,index){
+                    ChartData[item._id] = item.num
+                })
+                data.series[0].data = ChartData;
+                that.setState({
+                    data:data,
+                    showLoading:false
+                },function(){
+                    that.showChart();
+                })
+            }else{
+                alert(response.msg)
+            }
+        });
+    }
+    componentWillReceiveProps(nextProps) {
+       this.getData(nextProps.day,nextProps.url);
     }
     componentDidMount() {
-        this.showChart();
-        var that = this;
+        // this.showChart();
+        // var that = this;
     }
     componentDidUpdate() {
         this.showChart();
@@ -93,18 +131,27 @@ class LineCharts extends React.Component {
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(this.state.data);
     }
+    onChange(e){
+        var that = this;
+         this.setState({
+                   type:e.target.value
+                },function(){
+                      that.getData(that.props.day,that.props.url);
+                })
+    }
     render() {
         let tit = (this.props.hideTitle)?'':<div style={css.title}>数据走势</div>;
+        let main =  (this.state.showLoading)?<div style={{width: this.props.c_width, height:400,lineHeight: '400px',textAlign: 'center'}}><antd.Spin /></div>:<div id="LineCharts" style={{width: this.props.c_width, height:400}}></div>
         return (
             <div>
              {tit}
-              <antd.Radio.Group value={'1'} >
-                  <antd.Radio.Button value="1">js错误</antd.Radio.Button>
-                  <antd.Radio.Button value="2">资源加载时间</antd.Radio.Button>
-                  <antd.Radio.Button value="3">白屏时间</antd.Radio.Button>
-                  <antd.Radio.Button value="4">pv</antd.Radio.Button>
+              <antd.Radio.Group value={this.state.type} onChange={this.onChange} >
+                  <antd.Radio.Button value="getErrorLine">js错误</antd.Radio.Button>
+                  <antd.Radio.Button value="getPerformanceLine">资源加载时间</antd.Radio.Button>
+                  <antd.Radio.Button value="getResponseStartLine">白屏时间</antd.Radio.Button>
+                  <antd.Radio.Button value="getPvLine">pv</antd.Radio.Button>
                 </antd.Radio.Group>
-              <div id="LineCharts" style={{width: this.props.c_width, height:400}}></div>
+              {main}
             </div>
         )
     }

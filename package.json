@@ -6,8 +6,10 @@
   "scripts": {
     "run": "node ./config/server.js",
     "build": "webpack --config ./config/webpack.build.js && npm run move",
+    "test": "webpack --config ./config/webpack.test.js -w",
     "app": "node ./config/app.js",
-    "move": "node ./config/move.js"
+    "move": "node ./config/move.js",
+    "test1":"npm run test & npm run app "
   },
   "author": "ycf",
   "license": "ISC",
@@ -69,6 +71,11 @@
     "react-highlight": "^0.12.0",
     "react-markdown": "^4.0.3",
     "request": "^2.88.0",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.1.1",
+    "mongoose": "^5.2.3",
+    "morgan": "~1.9.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
+    "source-map": "^0.7.3"
   }
 }

@@ -11,6 +11,7 @@ class ErrorPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            showLoading:true,
             data: {
                 backgroundColor: '#153f5a',
 
@@ -37,9 +38,9 @@ class ErrorPage extends React.Component {
                     }
                 },
                 series: [{
-                    name: '访问来源',
+                    name: '页面',
                     type: 'pie',
-                    radius: '55%',
+                    radius:  ['40%', '60%'],
                     center: ['50%', '50%'],
                     data: [
                         { value: 335, name: '直接访问' },
@@ -48,11 +49,11 @@ class ErrorPage extends React.Component {
                         { value: 235, name: '视频广告' },
                         { value: 400, name: '搜索引擎' }
                     ].sort(function(a, b) { return a.value - b.value; }),
-                    roseType: 'radius',
+                    // roseType: 'radius',
                     label: {
                         normal: {
                             textStyle: {
-                                color: 'rgba(255, 255, 255, 0.3)'
+                                color: 'rgba(255, 255, 255, 0.8)'
                             }
                         }
                     },
@@ -66,13 +67,13 @@ class ErrorPage extends React.Component {
                             length2: 20
                         }
                     },
-                    itemStyle: {
-                        normal: {
-                            color: '#c23531',
-                            shadowBlur: 200,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    },
+                    // itemStyle: {
+                    //     normal: {
+                    //         color: '#c23531',
+                    //         shadowBlur: 200,
+                    //         shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    //     }
+                    // },
 
                     animationType: 'scale',
                     animationEasing: 'elasticOut',
@@ -83,29 +84,71 @@ class ErrorPage extends React.Component {
             }
         }
 
-
         this.showChart = this.showChart.bind(this);
+        this.getData = this.getData.bind(this);
+        
+        this.getData(this.props.day,this.props.url);
+    }
+    getData(day,url){
+        
+        var that = this,_url=url;
+        if(url == undefined){
+            _url = ''
+        }
+        fetch('/api/getErrorDistributed?day='+day+'&project='+this.props.project, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then(response => response.json()).then(function(response){
+            if(response.code==1){
+                let ChartData = [],data =  Object.assign({},that.state.data);
+                response.reslut.map(function(item,index){
+                    ChartData.push({ value: item.num, name: item.list[0],url:item._id })
+                })
+                data.series[0].data = ChartData.sort(function(a, b) { return a.value - b.value; });
+                that.setState({
+                    data:data,
+                    showLoading:false
+                },function(){
+                    that.showChart();
+                })
+            }else{
+                alert(response.msg)
+            }
+        });
+    }
+    componentWillReceiveProps(nextProps) {
+       this.getData(nextProps.day,nextProps.url);
     }
     componentDidMount() {
-        this.showChart();
+        //this.showChart();
         var that = this;
     }
-    componentDidUpdate() {
-        this.showChart();
-    }
+    // componentDidUpdate() {
+    //     this.showChart();
+    // }
 
     showChart() {
-        var myChart = echarts.init(document.getElementById('ErrorPage'));
+         var that = this;
+        document.getElementById('ErrorPage').innerHTML = '';
+        document.getElementById('ErrorPage').removeAttribute('_echarts_instance_')
+        setTimeout(function(){
+             let myChart = echarts.init(document.getElementById('ErrorPage'));
         // 指定图表的配置项和数据
         // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(this.state.data);
+            myChart.setOption(that.state.data);
+            myChart.on('click', function (e) {console.log(e.data)});
+        },300);
+       
     }
     render() {
-
+        let main =  (this.state.showLoading)?<div style={{width: 500, height:400,lineHeight: '400px',textAlign: 'center'}}><antd.Spin /></div>:<div id="ErrorPage" style={{width: 500, height:400,backgroundColor:'#153f5a'}}></div>
         return (
             <div>
               <div style={css.title}>错误页面分布</div>
-              <div id="ErrorPage" style={{width: 500, height:400}}></div>
+              {main}
             </div>
         )
     }

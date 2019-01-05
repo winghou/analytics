@@ -1,0 +1,12 @@
+/* BEM support Func
+ -------------------------- */
+/* rem support Func
+ -------------------------- */
+/* BEM
+ -------------------------- */
+.ant-menu-inline {
+  border: 0px; }
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background: #fff; }
+

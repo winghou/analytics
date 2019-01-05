@@ -1,0 +1,28 @@
+ var myperformance = {
+     css: [{
+         time: 338,
+         url: "http://tc-cdn01.jinxidao.com/dis2/dist/css/common.css?v=20181213"
+     }],
+     domready: 4.835,
+     js: [{
+         time: 338,
+         url: "http://tc-cdn01.jinxidao.com/dis2/dist/css/common.css?v=20181213"
+     }],
+     responseStart: 0.934,
+     xhr: [{
+         time: 338,
+         url: "http://tc-cdn01.jinxidao.com/dis2/dist/css/common.css?v=20181213"
+     }]
+ };
+ myperformance = JSON.stringify(myperformance);
+ var mybody = JSON.stringify({ title: '飞云', url: 'http://u.yaochufa.com/ycfad2014/public/yidd1nh', pathname: '/ycfad2014/public/yidd1nh', host: 'u.yaochufa.com', project: 'activity', ua: '=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36', performance: myperformance });
+
+
+ fetch('/api/addInfo', {
+     method: 'POST',
+     headers: {
+         'Accept': 'application/json',
+         'Content-Type': 'application/json',
+     },
+     'body': mybody
+ })
