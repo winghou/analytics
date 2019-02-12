@@ -9,7 +9,7 @@
     "test": "webpack --config ./config/webpack.test.js -w",
     "app": "node ./config/app.js",
     "move": "node ./config/move.js",
-    "test1":"npm run test & npm run app "
+    "test1": "npm run test & npm run app "
   },
   "author": "ycf",
   "license": "ISC",
@@ -67,15 +67,15 @@
     "babel-preset-stage-0": "^6.24.1",
     "codemirror": "^5.41.0",
     "ejs": "^2.6.1",
+    "https": "^1.0.0",
+    "mongoose": "^5.2.3",
+    "morgan": "~1.9.0",
     "react-codemirror2": "^5.1.0",
     "react-highlight": "^0.12.0",
     "react-markdown": "^4.0.3",
     "request": "^2.88.0",
-    "socket.io": "^2.1.1",
-    "mongoose": "^5.2.3",
-    "morgan": "~1.9.0",
-    "request": "^2.88.0",
     "request-promise": "^4.2.2",
+    "socket.io": "^2.1.1",
     "source-map": "^0.7.3"
   }
 }

@@ -27,9 +27,16 @@ app.use('/pagecontent', pagecontent);
 
 //api
 const APIRouter = require('../api/index');
+// 允许跨域访问／／／
+app.all('/api/*', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'x-Request-with')
+  res.header('Access-Control-Allow-Methods', "GET, POST")
+  res.header('X-Powered-By', '4.15.2')
+  res.header('Content-Type', 'application/json;charset=utf-8')
+  next()   //执行下一个中间件。
+})
 app.use('/api', APIRouter);
-
-
 
 
 app.listen(9191, function () {

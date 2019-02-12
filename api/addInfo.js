@@ -74,41 +74,6 @@ let addInfo = function(req, res, mydb) {
             msg: error
         })
     });
-
-
-    // TestEntity.save(function(error, doc) {
-    //     if (error) {
-    //        return Promise.resolve(error);
-    //     } else {
-    //         return Promise.resolve(1);
-    //     }
-    // }).then(function(reply){
-    //     if(reply!=1){
-    //         res.send({
-    //             code: 0,
-    //             msg: reply
-    //         });
-    //     }
-    //     //
-    //     performanceTestEntity.save(function(error, doc) {
-    //         if (error) {
-    //             res.send({
-    //                 code: 0,
-    //                 msg: error
-    //             });
-    //         } else {
-
-    //             res.send({
-    //                 code: 1,
-    //                 msg: "成功"
-    //             });
-    //         }
-    //     });
-    // });
-    
-
-
-
 }
 
 

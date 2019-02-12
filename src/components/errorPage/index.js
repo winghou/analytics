@@ -131,7 +131,7 @@ class ErrorPage extends React.Component {
     // }
 
     showChart() {
-         var that = this;
+        var that = this;
         document.getElementById('ErrorPage').innerHTML = '';
         document.getElementById('ErrorPage').removeAttribute('_echarts_instance_')
         setTimeout(function(){
@@ -139,7 +139,11 @@ class ErrorPage extends React.Component {
         // 指定图表的配置项和数据
         // 使用刚指定的配置项和数据显示图表。
             myChart.setOption(that.state.data);
-            myChart.on('click', function (e) {console.log(e.data)});
+            myChart.on('click', function (e) {
+                    //console.log(e.data)
+                    window.open('/pagecontent?day='+that.props.day+'&project='+that.props.project+'&url='+e.data.url+'&title='+e.data.name)
+                   // location.href = '/pagecontent?day='+that.props.day+'&project='+that.props.project+'&url='+e.data.url+'&title='+e.data.name
+            });
         },300);
        
     }

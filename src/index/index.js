@@ -11,6 +11,9 @@ import SevenClien from 'components/sevenClien';
 import Bar from './bar.js';
 
 import util from '../../api/util';
+
+const getParam = util.getParam;
+
 const date = util.date;
 
 let css = {
@@ -49,10 +52,11 @@ let css = {
 }
 class App extends React.Component {
 	constructor(props) {
+        console.log(getParam('project'))
         super(props);
        this.state = {
             day:date.formatTime(),
-            project:'activity',
+            project:getParam('project')||'activity',
             _day:date.formatTime() //数据走势日期
         }
         this.onChangeDate = this.onChangeDate.bind(this);

@@ -40,12 +40,33 @@ let pvStages =  function(start, end, pathname) {
     return stages
 };
 
+//Browser
+let browserStages =  function(start, end) {
+    let stages = [];
+    stages.push({
+        $match: {
+            timestamp: {
+                $gte: start,
+                $lt: end
+            }
+        }
+    })
+
+    stages.push({
+        $group: {
+            _id: '$nv.shell',
+            num: { $sum: 1 }
+        }
+    })
+    return stages
+};
+
 
 
 module.exports.performanceStages = performanceStages;
 
 module.exports.pvStages = pvStages;
-
+module.exports.browserStages = browserStages;
 
 
 

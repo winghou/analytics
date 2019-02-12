@@ -49,6 +49,8 @@ class SevenClien extends React.Component {
         
 
         this.showChart = this.showChart.bind(this);
+        this.getData = this.getData.bind(this);
+        this.getData(this.props.day,this.props.url);
     }
     componentDidMount() {
         this.showChart();
@@ -57,11 +59,45 @@ class SevenClien extends React.Component {
     componentDidUpdate() {
         this.showChart();
     }
+    getData(day,url){
+         var that = this,_url=url;
+        if(url == undefined){
+            _url = ''
+        }
+        fetch('/api/getBrowser?day='+day+'&project='+this.props.project+'&url='+_url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then(response => response.json()).then(function(response){
+            if(response.code==1){
+
+                let data =  Object.assign({},that.state.data),days = [],seriesData = [];
+                response.reslut.map(function(item,index){
+                    console.log(item._id)
+                   days.push(item._id);
+                   seriesData.push(item.num);
+                })
+                data.series[0].data = seriesData;
+                data.yAxis.data = days;
+                that.setState({
+                    data:data,
+                    showLoading:false
+                },function(){
+                    that.showChart();
+                })
+            }else{
+                alert(response.msg)
+            }
+        });
+    }
 
     showChart() {
         var myChart = echarts.init(document.getElementById('SevenClien'));
         // 指定图表的配置项和数据
         // 使用刚指定的配置项和数据显示图表。
+        console.log(this.state.data)
         myChart.setOption(this.state.data);
     }
     render() {

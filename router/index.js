@@ -10,6 +10,9 @@ const babel = require("babel-core");
 DocRouter.get('/', function(req, res, next) {
     res.render('index', { });
 });
+DocRouter.get('/setting', function(req, res, next) {
+    res.render('setting', { });
+});
 
 module.exports = DocRouter;
 

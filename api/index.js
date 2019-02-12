@@ -17,6 +17,9 @@ var getPerformanceLine = require("./getPerformanceLine");
 var getSevenPerformanceLine = require("./sevenPerformanceLine");
 
 var getDayInfo = require("./getDayInfo");
+var getBrowser = require("./getBrowser");
+var setting = require("./setting");
+var getSetting = require("./getSetting");
 
 var getDB = function (project) {
     return "ycf_"+project;
@@ -102,7 +105,19 @@ router.get("/getDayInfo", function (req, res) {
     getDayInfo(req,res,mydb)
 })
 
+//getBrowser 
+router.get("/getBrowser", function (req, res) {
+    getBrowser(req,res,mydb)
+})
 
+//getBrowser 
+router.post("/setting", function (req, res) {
+    setting(req,res,mydb)
+})
+//getBrowser 
+router.get("/getSetting", function (req, res) {
+    getSetting(req,res,mydb)
+})
 
 module.exports = router;
 
